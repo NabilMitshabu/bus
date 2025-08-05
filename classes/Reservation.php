@@ -38,6 +38,17 @@ class Reservation {
         return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
     }
 
+    // Récupérer toutes les réservations d'un client (par email)
+    public function lireTousParClient($email) {
+        $sql = "SELECT r.*, p.itineraire, p.date_depart, p.heure_depart
+                FROM reservations r
+                JOIN programmes p ON r.programme_id = p.id
+                WHERE r.email = ?
+                ORDER BY r.date_reservation DESC";
+        $stmt = $this->db->query($sql, [$email]);
+        return $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    }
+
     // Créer une nouvelle réservation
     public function creer($data) {
         // Vérifier si le programme a encore des places disponibles

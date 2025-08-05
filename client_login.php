@@ -21,22 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         // Vérifier les identifiants client
         $db = new Database();
-        $query = "SELECT c.*, a.nom as agence_nom 
-                  FROM clients c
-                  JOIN agences a ON c.agence_id = a.id
-                  WHERE c.email = ? AND c.statut = 'actif'";
-        
+        $query = "SELECT * FROM clients WHERE email = ? AND statut = 'actif'";
         $stmt = $db->query($query, [$email]);
         $client = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : null;
         
         if ($client && password_verify($password, $client['mot_de_passe'])) {
             $_SESSION['client_id'] = $client['id'];
-            $_SESSION['client_nom'] = $client['nom_complet'];
+            $_SESSION['client_nom_complet'] = $client['nom_complet'];
             $_SESSION['client_email'] = $client['email'];
-            $_SESSION['agence_id'] = $client['agence_id'];
-            $_SESSION['agence_nom'] = $client['agence_nom'];
+            $_SESSION['client_telephone'] = $client['telephone'];
+            $_SESSION['client_adresse'] = $client['adresse'];
             
-            header('Location: client/dashboard.php');
+            header('Location: client_espace.php');
             exit;
         } else {
             $error = 'Email ou mot de passe incorrect.';
