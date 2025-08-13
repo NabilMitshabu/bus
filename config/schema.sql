@@ -35,6 +35,7 @@ CREATE TABLE programmes (
     date_depart DATE NOT NULL,
     heure_depart TIME NOT NULL,
     heure_arrivee TIME NOT NULL,
+    bus VARCHAR(100) DEFAULT NULL,
     prix DECIMAL(10,2) NOT NULL,
     capacite INT NOT NULL,
     places_reservees INT DEFAULT 0,
@@ -96,10 +97,10 @@ INSERT INTO utilisateurs (agence_id, nom_complet, email, mot_de_passe, role) VAL
 (1, 'Admin Transport', 'admin@transportexpress.cd', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin'),
 (1, 'Manager Operations', 'manager@transportexpress.cd', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'manager');
 
-INSERT INTO programmes (agence_id, itineraire, date_depart, heure_depart, heure_arrivee, prix, capacite, places_reservees) VALUES
-(1, 'Lubumbashi - Kolwezi', '2024-01-15', '08:00:00', '12:30:00', 25000.00, 25, 18),
-(1, 'Lubumbashi - Likasi', '2024-01-15', '07:00:00', '09:15:00', 15000.00, 30, 30),
-(1, 'Lubumbashi - Kipushi', '2024-01-15', '10:00:00', '11:30:00', 10000.00, 20, 12);
+INSERT INTO programmes (agence_id, itineraire, date_depart, heure_depart, heure_arrivee, bus, prix, capacite, places_reservees) VALUES
+(1, 'Lubumbashi - Kolwezi', '2024-01-15', '08:00:00', '12:30:00', NULL, 25000.00, 25, 18),
+(1, 'Lubumbashi - Likasi', '2024-01-15', '07:00:00', '09:15:00', NULL, 15000.00, 30, 30),
+(1, 'Lubumbashi - Kipushi', '2024-01-15', '10:00:00', '11:30:00', NULL, 10000.00, 20, 12);
 
 UPDATE programmes SET statut = 'complet' WHERE places_reservees >= capacite;
 

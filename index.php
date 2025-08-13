@@ -107,6 +107,56 @@ if ($auth->isLoggedIn()) {
         </div>
     </section>
 
+    <!-- Horaires publics par itinéraire (BlocTrajet/JourSemaine) -->
+    <section class="py-12 bg-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold mb-6 text-primary"><i class="fas fa-clock mr-2"></i>Horaires disponibles</h2>
+            <form method="get" class="mb-6 flex flex-wrap items-end gap-4">
+                <label class="block">
+                    <span class="text-gray-700">Itinéraire :</span>
+                    <select name="itineraire" class="ml-2 px-2 py-1 border rounded">
+                        <option value="">Sélectionner</option>
+                        <option value="Lubumbashi - Kolwezi">Lubumbashi - Kolwezi</option>
+                        <option value="Lubumbashi - Likasi">Lubumbashi - Likasi</option>
+                        <option value="Lubumbashi - Kipushi">Lubumbashi - Kipushi</option>
+                        <option value="Lubumbashi - Fungurume">Lubumbashi - Fungurume</option>
+                        <option value="Lubumbashi - Kasumbalesa">Lubumbashi - Kasumbalesa</option>
+                    </select>
+                </label>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Voir les horaires</button>
+            </form>
+            <?php
+            require_once(__DIR__ . '/classes/HoraireJournalier.php');
+            $itineraire_sel = isset($_GET['itineraire']) ? $_GET['itineraire'] : '';
+            $agence_id = 1; // ou récupérer dynamiquement si besoin
+            if ($itineraire_sel) {
+                $hj = new HoraireJournalier();
+                $blocTrajet = $hj->lirePourDate($agence_id, $itineraire_sel, date('Y-m-d'));
+                if ($blocTrajet && !empty($blocTrajet->jours)) {
+                    echo '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">';
+                    foreach ($blocTrajet->jours as $jour => $blocJour) {
+                        echo '<div class="border rounded-lg p-4 shadow-sm">';
+                        echo '<h4 class="font-bold text-primary mb-2">' . ucfirst($jour) . '</h4>';
+                        if (!empty($blocJour->horaires)) {
+                            echo '<ul class="list-disc ml-4">';
+                            foreach ($blocJour->horaires as $horaire) {
+                                echo '<li>' . htmlspecialchars($horaire) . '</li>';
+                            }
+                            echo '</ul>';
+                        } else {
+                            echo '<span class="text-gray-400">Aucun horaire</span>';
+                        }
+                        echo '</div>';
+                    }
+                    echo '</div>';
+                } else {
+                    echo '<div class="text-red-500">Aucun horaire trouvé pour cet itinéraire.</div>';
+                }
+            }
+            ?>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

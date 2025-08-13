@@ -11,6 +11,7 @@ class Programme {
     public $date_depart;
     public $heure_depart;
     public $heure_arrivee;
+    public $bus;
     public $prix;
     public $capacite;
     public $places_reservees;
@@ -38,19 +39,23 @@ class Programme {
 
     // Créer un nouveau programme
     public function creer($data) {
-        $sql = "INSERT INTO programmes (agence_id, itineraire, date_depart, heure_depart, heure_arrivee, prix, capacite, places_reservees, statut) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, 0, 'actif')";
-        
+        $sql = "INSERT INTO programmes (agence_id, itineraire, date_depart, heure_depart, heure_arrivee, bus, prix, capacite, places_reservees, statut) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 'actif')";
+        // Correction : forcer le format de l'heure au format HH:00
+        $heure_depart = $data['heure_depart'];
+        if (preg_match('/^\\d{1,2}$/', $heure_depart)) {
+            $heure_depart = sprintf('%02d:00', (int)$heure_depart);
+        }
         $params = [
             $data['agence_id'],
             $data['itineraire'],
             $data['date_depart'],
-            $data['heure_depart'],
+            $heure_depart,
             $data['heure_arrivee'],
+            isset($data['bus']) ? $data['bus'] : null,
             $data['prix'],
             $data['capacite']
         ];
-        
         $stmt = $this->db->query($sql, $params);
         return $stmt !== false;
     }
@@ -123,20 +128,20 @@ class Programme {
                     date_depart = ?, 
                     heure_depart = ?, 
                     heure_arrivee = ?, 
+                    bus = ?,
                     prix = ?, 
                     capacite = ?
                 WHERE id = ?";
-        
         $params = [
             $data['itineraire'],
             $data['date_depart'],
             $data['heure_depart'],
             $data['heure_arrivee'],
+            isset($data['bus']) ? $data['bus'] : null,
             $data['prix'],
             $data['capacite'],
             $id
         ];
-        
         $stmt = $this->db->query($sql, $params);
         return $stmt !== false;
     }
